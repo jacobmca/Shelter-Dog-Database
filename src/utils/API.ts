@@ -1,4 +1,35 @@
-interface SearchParams {
+export interface LoginUser {
+  id: string;
+  username: string;
+  email: string;
+}
+
+export interface LoginCredentials {
+  name: string;
+  email: string;
+}
+
+export interface LoginResponse {
+  success: boolean;
+  token: string;
+  message?: string;
+  user?: LoginUser;
+}
+
+export interface SignupCredentials {
+  name: string;
+  email: string;
+  password: string;
+}
+
+export interface SignupResponse {
+  success: boolean;
+  token: string;
+  user?: LoginUser;
+  message?: string;
+}
+
+export interface SearchParams {
   query?: string;
   name?: string;
   age?: number;
@@ -6,7 +37,7 @@ interface SearchParams {
   breed?: string;
 }
 
-interface Dog {
+export interface Dog {
   id: string;
   img: string;
   name: string;
@@ -15,7 +46,7 @@ interface Dog {
   breed: string;
 }
 
-interface Location {
+export interface Location {
   zip_code: string;
   latitude: number;
   longitude: number;
@@ -29,11 +60,72 @@ interface Coordinates {
   lon: number;
 }
 
-interface LOGIN_USER {
-  id: string;
-  username: string;
-  email: string;
-}
+// Login
+export const loginUser = async (credentials: LoginCredentials): Promise<LoginResponse> => {
+  try {
+    const response = await fetch('YOUR_API_ENDPOINT', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      throw new Error('Login failed');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+};
+
+// Logout
+export const logoutUser = async (): Promise<void> => {
+  try {
+    const response = await fetch(
+      'https://frontend-take-home-service.fetch.com/auth/logout',
+      {
+        method: 'POST',
+        credentials: 'include',
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`Logout failed with status: ${response.status}`);
+    }
+  } catch (error) {
+    console.error('Error during logout:', error);
+    throw error;
+  }
+};
+
+// Sign Up
+export const signupUser = async (credentials: SignupCredentials): Promise<SignupResponse> => {
+  try {
+    const response = await fetch('https://frontend-take-home-service.fetch.com/auth/register', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+      body: JSON.stringify(credentials),
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      throw new Error('Signup failed');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error:', error);
+    throw error;
+  }
+};
+
 
 export const searchFetchDogs = async (params: SearchParams): Promise<Dog[]> => {
   try {
