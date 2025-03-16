@@ -23,23 +23,12 @@ const FavoriteDogs = () => {
       setLoading(true);
       setError("");
 
-      // First get the favorited dogs
-      const favoritesResponse = await fetch('https://frontend-take-home-service.fetch.com/dogs/favorites', {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      if (!favoritesResponse.ok) {
-        throw new Error('Failed to fetch favorites');
-      }
-
-      const favoriteIds = await favoritesResponse.json();
+      // Get favorited dog IDs from localStorage
+      const favoriteIds = JSON.parse(localStorage.getItem('favoriteDogs') || '[]');
       
       if (!favoriteIds || favoriteIds.length === 0) {
         setError("You haven't favorited any dogs yet!");
+        setLoading(false);
         return;
       }
 
