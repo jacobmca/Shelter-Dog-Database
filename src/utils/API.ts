@@ -1,3 +1,12 @@
+export interface SignupFormData {
+  username: string;
+  email: string;
+}
+
+export interface SignupFormProps {
+  handleModalClose: () => void;
+}
+
 export interface LoginUser {
   id: string;
   username: string;
@@ -53,6 +62,15 @@ export interface Location {
   city: string;
   state: string;
   county: string;
+}
+
+export interface LoginFormData {
+  name: string;
+  email: string;
+}
+
+export interface LoginFormProps {
+  handleModalClose: () => void;
 }
 
 interface Coordinates {

@@ -1,15 +1,7 @@
 import { useState } from 'react';
 import { Form, Button, Alert } from 'react-bootstrap';
 import Auth from '../utils/auth';
-
-interface LoginFormData {
-  name: string;
-  email: string;
-}
-
-interface LoginFormProps {
-  handleModalClose: () => void;
-}
+import type { LoginFormData, LoginFormProps } from "../utils/API";
 
 const LoginForm = ({ handleModalClose }: LoginFormProps) => {
   const [userFormData, setUserFormData] = useState<LoginFormData>({ 
