@@ -1,58 +1,55 @@
-// use this to decode a token and get the user's information
-import { jwtDecode } from 'jwt-decode';
-
-interface DecodedToken {
-    exp: number;
-    data?: {
-        email: string;
-        name: string;
-    }
-}
-
-// create a new class to instantiate for a user
 class AuthService {
-  // get user data from token
-  getProfile() {
-    const token = this.getToken();
-    return token ? JSON.parse(atob(token.split('.')[1])) : null;
-  }
+  private baseUrl = 'https://frontend-take-home-service.fetch.com';
 
-  // check if user's logged in
-  loggedIn() {
-    // Checks if there is a saved token and it's still valid
-    const token = this.getToken();
-    return !!token && !this.isTokenExpired(token);
-  }
-
-  // check if token is expired
-  isTokenExpired(token: string): boolean {
+  async loggedIn(): Promise<boolean> {
     try {
-      const decoded = jwtDecode<DecodedToken>(token);
-      if (decoded.exp < Date.now() / 1000) {
-        return true;
-      }
-      return false;
+      // Try to fetch breeds as a way to verify authentication
+      const response = await fetch(`${this.baseUrl}/dogs/breeds`, {
+        method: 'GET',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      return response.ok;
     } catch {
       return false;
     }
   }
 
-  getToken(): string | null {
-    // Retrieves the user token from localStorage
-    return localStorage.getItem('id_token');
+  async login(name: string, email: string): Promise<boolean> {
+    try {
+      const response = await fetch(`${this.baseUrl}/auth/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          name, 
+          email 
+        }),
+        credentials: 'include'
+      });
+
+      return response.ok;
+    } catch (error) {
+      console.error('Login error:', error);
+      return false;
+    }
   }
 
-  login(idToken: string): void {
-    // Saves user token to localStorage
-    localStorage.setItem('id_token', idToken);
-    window.location.assign('/');
-  }
-
-  logout(): void {
-    // Clear user token and profile data from localStorage
-    localStorage.removeItem('id_token');
-    // this will reload the page and reset the state of the application
-    window.location.assign('/');
+  async logout(): Promise<void> {
+    try {
+      await fetch(`${this.baseUrl}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   }
 }
 

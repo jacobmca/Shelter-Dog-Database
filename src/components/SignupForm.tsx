@@ -1,28 +1,23 @@
+// SignupForm.tsx
 import { useState } from "react";
 import { Form, Button, Alert } from "react-bootstrap";
-import Auth from "../utils/auth";
+import Auth from '../utils/auth';
 
-interface FormData {
+// Rename interface to avoid conflict with built-in FormData
+interface SignupFormData {
   username: string;
   email: string;
-  password: string;
 }
 
-interface SignupResponse {
-  success: boolean;
-  token: string;
-  user: {
-    id: string;
-    username: string;
-    email: string;
-  };
+interface SignupFormProps {
+  handleModalClose: () => void;
 }
 
-const SignupForm = () => {
-  const [userFormData, setUserFormData] = useState<FormData>({
+const SignupForm = ({ handleModalClose }: SignupFormProps) => {
+  
+  const [userFormData, setUserFormData] = useState<SignupFormData>({
     username: "",
     email: "",
-    password: "",
   });
   const [validated, setValidated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -30,12 +25,16 @@ const SignupForm = () => {
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    setUserFormData({ ...userFormData, [name]: value });
+    setUserFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   };
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    // Validate Form
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -44,54 +43,39 @@ const SignupForm = () => {
       return;
     }
 
+    setValidated(true);
+  
     try {
-      const response = await fetch(
-        "https://frontend-take-home-service.fetch.com/auth/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: userFormData.username,
-            email: userFormData.email,
-            password: userFormData.password,
-          }),
-          credentials: "include",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Something went wrong with signup!");
-      }
-
-      const data = (await response.json()) as SignupResponse;
-
-      if (data.token) {
-        Auth.login(data.token);
+      const success = await Auth.login(userFormData.username, userFormData.email);
+      
+      if (success) {
+        // Clear form
+        setUserFormData({
+          username: "",
+          email: "",
+        });
+        setValidated(false);
+  
+        // Close modal
+        handleModalClose();
+        
+        // Refresh page to update UI
+        window.location.reload();
       } else {
-        throw new Error("No token received");
+        throw new Error('Login failed');
       }
     } catch (err) {
       console.error("Error:", err);
       setShowAlert(true);
       setErrorMessage(
-        err instanceof Error ? err.message : "An error occurred during signup"
+        err instanceof Error ? err.message : "An error occurred during login"
       );
     }
-
-    setUserFormData({
-      username: "",
-      email: "",
-      password: "",
-    });
   };
 
   return (
     <>
-      {/* This is needed for the validation functionality above */}
       <Form noValidate validated={validated} onSubmit={handleFormSubmit}>
-        {/* show alert if server response is bad */}
         <Alert
           dismissible
           onClose={() => setShowAlert(false)}
@@ -131,28 +115,8 @@ const SignupForm = () => {
           </Form.Control.Feedback>
         </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Label htmlFor="password">Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Your password"
-            name="password"
-            onChange={handleInputChange}
-            value={userFormData.password}
-            required
-          />
-          <Form.Control.Feedback type="invalid">
-            Password is required!
-          </Form.Control.Feedback>
-        </Form.Group>
         <Button
-          disabled={
-            !(
-              userFormData.username &&
-              userFormData.email &&
-              userFormData.password
-            )
-          }
+          disabled={!(userFormData.username && userFormData.email)}
           type="submit"
           variant="success"
         >

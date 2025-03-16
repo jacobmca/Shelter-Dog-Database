@@ -1,43 +1,22 @@
 import { useState, useEffect } from "react";
 import { Container, Col, Form, Button, Card, Row } from "react-bootstrap";
-import { useMutation } from "@apollo/client";
-
 import Auth from "../utils/auth";
-import { FavoriteDog } from "../utils/mutations";
 import { searchFetchDogs } from "../utils/API";
-import { saveDogIds, getSavedDogIds } from "../utils/localStorage";
-
-// Define interfaces for the dog data
-interface Dog {
-  id: string;
-  img: string;
-  name: string;
-  age: number;
-  zip_code: string;
-  breed: string;
-}
-
-// Define interface for favorite dog data
-interface FavoriteDogData {
-  dogId: string;
-  img: string;
-  name: string;
-  age: number;
-  zip_code: string;
-  breed: string;
-}
+import type { Dog } from "../utils/API";
 
 const SearchDogs = () => {
-  // Add type definitions to state
   const [searchedDogs, setSearchedDogs] = useState<Dog[]>([]);
   const [searchInput, setSearchInput] = useState("");
-  const [favoriteDogIds, setFavoriteDogIds] = useState<string[]>(getSavedDogIds());
-  
-  const [favoriteDog] = useMutation<{ favoriteDog: FavoriteDogData }>(FavoriteDog);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+  // Check auth status
   useEffect(() => {
-    return () => saveDogIds(favoriteDogIds);
-  }, [favoriteDogIds]);
+    const checkAuth = async () => {
+      const loggedIn = await Auth.loggedIn();
+      setIsLoggedIn(loggedIn);
+    };
+    checkAuth();
+  }, []);
 
   const handleFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -47,19 +26,9 @@ const SearchDogs = () => {
     }
 
     try {
-      const response = await searchFetchDogs({
+      const dogData = await searchFetchDogs({
         query: searchInput
       });
-
-      const dogData = response.map((dog: Dog) => ({
-        id: dog.id,
-        img: dog.img,
-        name: dog.name,
-        age: dog.age,
-        zip_code: dog.zip_code,
-        breed: dog.breed
-      }));
-
       setSearchedDogs(dogData);
       setSearchInput("");
     } catch (err) {
@@ -68,41 +37,38 @@ const SearchDogs = () => {
   };
 
   const handleFavoriteDog = async (dogId: string) => {
-    // Add type assertion to find method
-    const dogToFavorite = searchedDogs.find((dog: Dog) => dog.id === dogId);
-    
-    if (!dogToFavorite) {
-      return;
-    }
-
-    const token = Auth.loggedIn() ? Auth.getToken() : null;
-
-    if (!token) {
+    if (!isLoggedIn) {
       return false;
     }
-
+  
     try {
-      const { data } = await favoriteDog({
-        variables: { 
-          dogData: {
-            dogId: dogToFavorite.id,
-            img: dogToFavorite.img,
-            name: dogToFavorite.name,
-            age: dogToFavorite.age,
-            zip_code: dogToFavorite.zip_code,
-            breed: dogToFavorite.breed
-          }
+      const matchResponse = await fetch('https://frontend-take-home-service.fetch.com/dogs/match', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
         },
+        credentials: 'include',
+        body: JSON.stringify([dogId]) // API expects an array of dog IDs
       });
-
-      if (data) {
-        setFavoriteDogIds([...favoriteDogIds, dogToFavorite.id]);
+  
+      if (!matchResponse.ok) {
+        throw new Error(`Failed to match with dog: ${matchResponse.status}`);
       }
+  
+      const result = await matchResponse.json();
+      if (result.match) {
+        console.log('Favorited this dog!');
+        alert('Favorited this dog!');
+      }
+  
     } catch (err) {
-      console.error(err);
+      console.error('Error matching with dog:', err);
+      alert('Failed to match with this dog. Please try again.');
     }
   };
-
+  
+  
+  
   return (
     <>
       <div className="text-light bg-dark p-5">
@@ -151,23 +117,18 @@ const SearchDogs = () => {
                   <Card.Body>
                     <Card.Title>{dog.name}</Card.Title>
                     <Card.Text>
-                      Breed: {dog.breed}<br/>
-                      Age: {dog.age}<br/>
+                      Breed: {dog.breed}
+                      <br />
+                      Age: {dog.age}
+                      <br />
                       Location: {dog.zip_code}
                     </Card.Text>
-                    {Auth.loggedIn() && (
+                    {isLoggedIn && (
                       <Button
-                        disabled={favoriteDogIds?.some(
-                          (savedId) => savedId === dog.id
-                        )}
                         className="btn-block btn-info"
                         onClick={() => handleFavoriteDog(dog.id)}
                       >
-                        {favoriteDogIds?.some(
-                          (savedId) => savedId === dog.id
-                        )
-                          ? "This dog has already been favorited!"
-                          : "Favorite this dog!"}
+                        Favorite this dog!
                       </Button>
                     )}
                   </Card.Body>

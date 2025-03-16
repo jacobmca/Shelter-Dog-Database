@@ -127,37 +127,50 @@ export const signupUser = async (credentials: SignupCredentials): Promise<Signup
 };
 
 
-export const searchFetchDogs = async (params: SearchParams): Promise<Dog[]> => {
+export const searchFetchDogs = async (params: SearchParams) => {
   try {
-    // Convert params object to URL search parameters
     const queryParams = new URLSearchParams();
-
+    
     // Add each parameter to the query string if it exists
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined) {
         queryParams.append(key, value.toString());
       }
     });
-
-    const response = await fetch(
-      `https://frontend-take-home-service.fetch.com/dogs/search?${queryParams}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
+    // First get the dog IDs from search
+    const searchResponse = await fetch(`https://frontend-take-home-service.fetch.com/dogs/search`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
       }
-    );
+    });
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+    if (!searchResponse.ok) {
+      throw new Error('Search failed');
     }
 
-    const data = await response.json();
-    return data as Dog[];
+    const searchData = await searchResponse.json();
+    const dogIds = searchData.resultIds;
+
+    // Then get the actual dog data using the IDs
+    const dogsResponse = await fetch('https://frontend-take-home-service.fetch.com/dogs', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(dogIds)
+    });
+
+    if (!dogsResponse.ok) {
+      throw new Error('Failed to fetch dog details');
+    }
+
+    const dogsData = await dogsResponse.json();
+    return dogsData; // This will be an array of dog objects
   } catch (error) {
-    console.error("Error fetching dogs:", error);
+    console.error('Error in searchFetchDogs:', error);
     throw error;
   }
 };
