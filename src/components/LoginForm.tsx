@@ -43,7 +43,6 @@ const LoginForm = ({ handleModalClose }: LoginFormProps) => {
       setValidated(false);
       handleModalClose();
       
-      // Force a reload to update the auth state
       window.location.reload();
     } catch (err) {
       console.error('Login failed:', err);
@@ -68,7 +67,7 @@ const LoginForm = ({ handleModalClose }: LoginFormProps) => {
         <Form.Group className='mb-3'>
           <Form.Label htmlFor='name'>Name</Form.Label>
           <Form.Control
-            type='text' // Changed to email type for better validation
+            type='text'
             placeholder='Your name'
             name='name'
             onChange={handleInputChange}

@@ -35,7 +35,7 @@ npm run dev
 
 Alternatively, you can access the deployed link below:
 
-[Link to Deployed Program](https://new-book-finder-2.onrender.com/)
+[Link to Deployed Application](https://shelter-dog-database.onrender.com/)
 
 Once the program is running, you should see the following login page:
 

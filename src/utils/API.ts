@@ -157,18 +157,16 @@ export const signupUser = async (credentials: SignupCredentials): Promise<Signup
   }
 };
 
-
+// Search
 export const searchFetchDogs = async (params: SearchParams) => {
   try {
     const queryParams = new URLSearchParams();
     
-    // Add each parameter to the query string if it exists
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined) {
         queryParams.append(key, value.toString());
       }
     });
-    // First get the dog IDs from search
     const searchResponse = await fetch(`https://frontend-take-home-service.fetch.com/dogs/search`, {
       method: 'GET',
       credentials: 'include',
@@ -184,7 +182,6 @@ export const searchFetchDogs = async (params: SearchParams) => {
     const searchData = await searchResponse.json();
     const dogIds = searchData.resultIds;
 
-    // Then get the actual dog data using the IDs
     const dogsResponse = await fetch('https://frontend-take-home-service.fetch.com/dogs', {
       method: 'POST',
       credentials: 'include',
@@ -199,7 +196,7 @@ export const searchFetchDogs = async (params: SearchParams) => {
     }
 
     const dogsData = await dogsResponse.json();
-    return dogsData; // This will be an array of dog objects
+    return dogsData;
   } catch (error) {
     console.error('Error in searchFetchDogs:', error);
     throw error;
@@ -208,10 +205,8 @@ export const searchFetchDogs = async (params: SearchParams) => {
 
 export const searchFetchLocations = async (params: Location): Promise<Dog[]> => {
   try {
-    // Convert params object to URL search parameters
     const queryParams = new URLSearchParams();
 
-    // Add each parameter to the query string if it exists
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined) {
         queryParams.append(key, value.toString());
@@ -243,10 +238,8 @@ export const searchFetchLocations = async (params: Location): Promise<Dog[]> => 
 
 export const searchFetchCoordinates = async (params: Coordinates): Promise<Dog[]> => {
   try {
-    // Convert params object to URL search parameters
     const queryParams = new URLSearchParams();
 
-    // Add each parameter to the query string if it exists
     Object.entries(params).forEach(([key, value]) => {
       if (value !== undefined) {
         queryParams.append(key, value.toString());

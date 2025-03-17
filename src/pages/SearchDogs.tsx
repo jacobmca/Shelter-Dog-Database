@@ -160,7 +160,7 @@ const SearchDogs = () => {
           },
           body: JSON.stringify({
             city: locationQuery,
-            size: 10000, // Consider reducing this size
+            size: 10000,
           }),
         }
       );
@@ -263,7 +263,7 @@ const SearchDogs = () => {
       // Initial search
       handleSearch(0);
     }
-  }, [isLoggedIn, handleSearch]); // Add handleSearch to dependency array
+  }, [isLoggedIn, handleSearch]);
 
   if (!isLoggedIn) {
     return <h2>Please log in to search dogs.</h2>;

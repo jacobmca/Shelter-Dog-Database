@@ -3,7 +3,6 @@ class AuthService {
 
   async loggedIn(): Promise<boolean> {
     try {
-      // Try to fetch breeds as a way to verify authentication
       const response = await fetch(`${this.baseUrl}/dogs/breeds`, {
         method: 'GET',
         credentials: 'include',
