@@ -20,11 +20,11 @@ To install, please clone this repository to your computer using the following st
 
 ## Description
 
-This is the New Book Finder, a Google Books API-based search engine program. Upon signing up, a user can search for books within the Google Books library and add them to their Saved Books list. Saved books can be removed from the list when no longer wanted.
+This is the Shelter Dog Finder, a search engine that allows you to sort through shelter dogs and favorite the ones you like most. Based on your favorites, the application will automatically match you with an option.
 
-Note that a user must login to access these features. An account requires a username, an e-mail address, and a password.
+Users just need to sign up/login in order to use the app. Sign-in requires a username and e-mail.
 
-This program utilizes GraphQL built with Apollo Server to connect with the Google Books API. It's built using the MERN stack; the front-end utilizes React, the back-end uses MongoDB database and Node.js/Express.js.
+This repo is based in React, TypeScript, and Bootstrap.
 
 ## Usage
 
@@ -37,19 +37,19 @@ Alternatively, you can access the deployed link below:
 
 [Link to Deployed Program](https://new-book-finder-2.onrender.com/)
 
-Once the program is running, you should see the following home page:
+Once the program is running, you should see the following login page:
 
 ![Screenshot](client/public/screenshot1.png)
 
-If you do not have an account already, click the "Sign Up" button and create an account using a user name, e-mail, and password. If you do, click Login to access your account.
+If you do not have an account already, click the "Sign Up" button and create an account using a username and e-mail. Otherwise, click Login to access your account.
 
 ![Screenshot](client/public/screenshot2.png)
 
-To search for a book, simply enter a title or key words in the "Search For Books!" field and click "Submit Search." Click "Save This Book!" under a search result to add the book to your saved books list.
+Once you've logged in, the page will update to show two drop-down menus to help you sort through your dog options. Use "Filter by Breed" to sort by breed, and Sort Direction to sort alphabetically in ascending or descending fashion by breed.
 
 ![Screenshot](client/public/screenshot3.png)
 
-You can view your saved books by clicking on the "Saved Books" button in the top right of your navigation bar. To remove a book from your list, scroll down and click "Delete this Book" underneath the title.
+In the right hand corner of the navbar, click "See Your Match" to generate a shetler dog match! If you'd like to generate another, click "Generate New Match." If no dogs are favorited, this section will be empty.
 
 ![Screenshot](client/public/screenshot4.png)
 
@@ -63,7 +63,7 @@ This project is licensed under the MIT License. For more information, please see
 This program was created by Jacob McAuliffe for the UC Berkeley eDX Coding Boot Camp.
 
 ## Tests
-In the future, I would love to find ways for users to store more personalized data about the books they save, such as likes/dislikes, reviews, or change the order the books appear in the list. I would also like to be able to allow users to have multiple saved book lists too. They could then also change the names of the lists, each list given a unique utility.
+In the future, I would love to update this application to include more ways of sorting through the dogs - name, age, etc. I'd also love to update the user profiles to allow them to be personizable, with user information including name, location, and other information pertinent to the application's dog adoption focused subject matter.
 
 ## Questions
 If you have further questions, you can reach me at [mcauliffemedia@gmail.com](mailto:mcauliffemedia@gmail.com).

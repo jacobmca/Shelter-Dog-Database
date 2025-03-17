@@ -177,7 +177,7 @@ const SearchDogs = () => {
 
   return (
     <>
-      <div className="text-light bg-dark p-5">
+      <div className="text-light bg-primary p-5">
         <Container>
           <h1>Search for Dogs!</h1>
           <Row className="mt-4">
@@ -228,7 +228,7 @@ const SearchDogs = () => {
             <Row>
               {searchedDogs.map((dog: Dog) => (
                 <Col md="4" className="mb-4" key={dog.id}>
-                  <Card border="dark">
+                  <Card border="info">
                     {dog.img && (
                       <Card.Img
                         src={dog.img}
