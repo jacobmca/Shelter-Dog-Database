@@ -24,8 +24,10 @@ const FavoriteDogs = () => {
       setError("");
 
       // Get favorited dog IDs from localStorage
-      const favoriteIds = JSON.parse(localStorage.getItem('favoriteDogs') || '[]');
-      
+      const favoriteIds = JSON.parse(
+        localStorage.getItem("favoriteDogs") || "[]"
+      );
+
       if (!favoriteIds || favoriteIds.length === 0) {
         setError("You haven't favorited any dogs yet!");
         setLoading(false);
@@ -33,40 +35,45 @@ const FavoriteDogs = () => {
       }
 
       // Generate a match from favorites
-      const matchResponse = await fetch('https://frontend-take-home-service.fetch.com/dogs/match', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(favoriteIds)
-      });
+      const matchResponse = await fetch(
+        "https://frontend-take-home-service.fetch.com/dogs/match",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(favoriteIds),
+        }
+      );
 
       if (!matchResponse.ok) {
-        throw new Error('Failed to generate match');
+        throw new Error("Failed to generate match");
       }
 
       const matchResult: { match: string } = await matchResponse.json();
-      
+
       // Get the matched dog's details
-      const dogResponse = await fetch('https://frontend-take-home-service.fetch.com/dogs', {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify([matchResult.match])
-      });
+      const dogResponse = await fetch(
+        "https://frontend-take-home-service.fetch.com/dogs",
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify([matchResult.match]),
+        }
+      );
 
       if (!dogResponse.ok) {
-        throw new Error('Failed to fetch matched dog details');
+        throw new Error("Failed to fetch matched dog details");
       }
 
       const [matchedDogData] = await dogResponse.json();
       setMatchedDog(matchedDogData);
-
     } catch (error) {
-      console.error('Error generating match:', error);
+      console.error("Error generating match:", error);
       setError("Failed to generate match. Please try again later.");
     } finally {
       setLoading(false);
@@ -96,7 +103,7 @@ const FavoriteDogs = () => {
       </div>
       <Container>
         {error && <div className="alert alert-danger">{error}</div>}
-        
+
         {matchedDog ? (
           <div className="text-center">
             <h2 className="pt-5">Meet your perfect match!</h2>
@@ -104,10 +111,10 @@ const FavoriteDogs = () => {
               <Col md="6">
                 <Card border="dark">
                   {matchedDog.img && (
-                    <Card.Img 
-                      src={matchedDog.img} 
-                      alt={`${matchedDog.name}`} 
-                      variant="top" 
+                    <Card.Img
+                      src={matchedDog.img}
+                      alt={`${matchedDog.name}`}
+                      variant="top"
                     />
                   )}
                   <Card.Body>
@@ -115,12 +122,18 @@ const FavoriteDogs = () => {
                       <h3>{matchedDog.name}</h3>
                     </Card.Title>
                     <Card.Text>
-                      <p><strong>Breed:</strong> {matchedDog.breed}</p>
-                      <p><strong>Age:</strong> {matchedDog.age}</p>
-                      <p><strong>Location:</strong> {matchedDog.zip_code}</p>
+                      <span className="d-block mb-2">
+                        <strong>Breed:</strong> {matchedDog.breed}
+                      </span>
+                      <span className="d-block mb-2">
+                        <strong>Age:</strong> {matchedDog.age}
+                      </span>
+                      <span className="d-block">
+                        <strong>Location:</strong> {matchedDog.zip_code}
+                      </span>
                     </Card.Text>
-                    <Button 
-                      variant="primary" 
+                    <Button
+                      variant="primary"
                       onClick={generateMatch}
                       className="mt-3"
                     >
@@ -135,11 +148,7 @@ const FavoriteDogs = () => {
           <div className="text-center pt-5">
             <h2>No match generated yet!</h2>
             <p>Make sure you've favorited some dogs first.</p>
-            <Button 
-              variant="primary" 
-              onClick={generateMatch}
-              className="mt-3"
-            >
+            <Button variant="primary" onClick={generateMatch} className="mt-3">
               Generate Match
             </Button>
           </div>

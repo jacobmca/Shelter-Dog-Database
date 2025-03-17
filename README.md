@@ -1,4 +1,4 @@
-# New-Book-Finder
+# Shelter-Dog-Finder
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ## Table of Contents
 * [Installation](#installation)
@@ -20,15 +20,15 @@ To install, please clone this repository to your computer using the following st
 
 ## Description
 
-This is the Shelter Dog Finder, a search engine that allows you to sort through shelter dogs and favorite the ones you like most. Based on your favorites, the application will automatically match you with an option.
+This is the Shelter Dog Finder, a search engine that allows users to sort through shelter dogs and favorite the ones you connect with most. Based on your favorites, the application will automatically match you with a shelter.
 
-Users just need to sign up/login in order to use the app. Sign-in requires a username and e-mail.
+This repo primarily utilizes React, TypeScript, and Bootstrap.
 
-This repo is based in React, TypeScript, and Bootstrap.
+Users can sign up to use the app with a username and e-mail.
 
 ## Usage
 
-After downloading the program per the below, run the following commands in your terminal:
+After downloading, run the following commands in your terminal:
 
 npm i<br/>
 npm run dev
@@ -39,19 +39,19 @@ Alternatively, you can access the deployed link below:
 
 Once the program is running, you should see the following login page:
 
-![Screenshot](client/public/screenshot1.png)
+![Screenshot](public/screenshot1.png)
 
 If you do not have an account already, click the "Sign Up" button and create an account using a username and e-mail. Otherwise, click Login to access your account.
 
-![Screenshot](client/public/screenshot2.png)
+![Screenshot](public/screenshot2.png)
 
-Once you've logged in, the page will update to show two drop-down menus to help you sort through your dog options. Use "Filter by Breed" to sort by breed, and Sort Direction to sort alphabetically in ascending or descending fashion by breed.
+Once you've logged in, the page will update to show two drop-down menus and an input field to help you sort through dog options. Use "Filter by Breed" to sort by breed, and "Sort Direction" to sort alphabetically in ascending or descending fashion by breed. The "Filter by City" field allows you to sort options based on specific city.
 
-![Screenshot](client/public/screenshot3.png)
+![Screenshot](public/screenshot3.png)
 
 In the right hand corner of the navbar, click "See Your Match" to generate a shetler dog match! If you'd like to generate another, click "Generate New Match." If no dogs are favorited, this section will be empty.
 
-![Screenshot](client/public/screenshot4.png)
+![Screenshot](public/screenshot4.png)
 
 ## Contributions
 When contributing to this repository, please reach out to me via e-mail to discuss the change you would like to make first. I am open to front-end and back-end updates.

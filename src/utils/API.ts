@@ -73,6 +73,19 @@ export interface LoginFormProps {
   handleModalClose: () => void;
 }
 
+export interface Location {
+  zip_code: string;
+  latitude: number;
+  longitude: number;
+  city: string;
+  state: string;
+}
+
+export interface LocationSearchResponse {
+  results: Location[];
+  total: number;
+}
+
 interface Coordinates {
   lat: number;
   lon: number;
