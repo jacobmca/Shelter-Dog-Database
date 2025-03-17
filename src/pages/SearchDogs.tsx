@@ -266,7 +266,7 @@ const SearchDogs = () => {
   }, [isLoggedIn, handleSearch]); // Add handleSearch to dependency array
 
   if (!isLoggedIn) {
-    return <h2>Please log in to search dogs.</h2>;
+    return <h2>Please login to search dogs.</h2>;
   }
 
   return (

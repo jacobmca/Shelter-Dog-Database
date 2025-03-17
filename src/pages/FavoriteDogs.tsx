@@ -87,7 +87,7 @@ const FavoriteDogs = () => {
   }, [isLoggedIn]);
 
   if (!isLoggedIn) {
-    return <h2>Please log in to view your match.</h2>;
+    return <h2>Please login to view your match.</h2>;
   }
 
   if (loading) {
