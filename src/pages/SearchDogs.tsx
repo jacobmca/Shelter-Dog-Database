@@ -13,6 +13,7 @@ const SearchDogs = () => {
   const [loading, setLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [error, setError] = useState<string>("");
+  const [favoriteButtonStates, setFavoriteButtonStates] = useState<{ [key: string]: boolean }>({});
   const resultsPerPage = 25;
 
   // Check auth status
@@ -124,19 +125,44 @@ const SearchDogs = () => {
       // Get current favorites from localStorage
       const currentFavorites = JSON.parse(localStorage.getItem('favoriteDogs') || '[]');
       
-      // Add new favorite if it's not already there
+      // Toggle favorite status
       if (!currentFavorites.includes(dogId)) {
+        // Add to favorites
         const newFavorites = [...currentFavorites, dogId];
         localStorage.setItem('favoriteDogs', JSON.stringify(newFavorites));
+        setFavoriteButtonStates(prev => ({
+          ...prev,
+          [dogId]: true
+        }));
+      } else {
+        // Remove from favorites
+        const newFavorites = currentFavorites.filter((id: string) => id !== dogId);
+        localStorage.setItem('favoriteDogs', JSON.stringify(newFavorites));
+        setFavoriteButtonStates(prev => ({
+          ...prev,
+          [dogId]: false
+        }));
       }
-
-      alert('Successfully favorited dog!');
-
     } catch (err) {
       console.error('Error favoriting dog:', err);
       alert('Failed to favorite this dog. Please try again.');
     }
   };
+
+  // Initialize favorite button states
+  useEffect(() => {
+    if (isLoggedIn) {
+      const currentFavorites = JSON.parse(localStorage.getItem('favoriteDogs') || '[]');
+      const initialButtonStates = currentFavorites.reduce((acc: { [key: string]: boolean }, dogId: string) => {
+        acc[dogId] = true;
+        return acc;
+      }, {});
+      setFavoriteButtonStates(initialButtonStates);
+      
+      // Initial search when component mounts
+      handleSearch(0);
+    }
+  }, [isLoggedIn]);
 
   // Trigger search when filters change
   useEffect(() => {
@@ -218,10 +244,10 @@ const SearchDogs = () => {
                         <strong>Location:</strong> {dog.zip_code}
                       </Card.Text>
                       <Button
-                        className="btn-block btn-info"
+                        className={`btn-block ${favoriteButtonStates[dog.id] ? 'btn-success' : 'btn-info'}`}
                         onClick={() => handleFavoriteDog(dog.id)}
                       >
-                        Favorite this dog!
+                        {favoriteButtonStates[dog.id] ? 'Favorited!' : 'Favorite This Dog'}
                       </Button>
                     </Card.Body>
                   </Card>
